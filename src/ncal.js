@@ -158,7 +158,7 @@ function getLayout(options) {
     const args = options.args;
     let year, month;
     if (args.length === 0) {
-        
+
         const year = moment().year();
         const month = moment().month();
         return getMonthLayout(year,month);
