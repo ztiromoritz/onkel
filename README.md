@@ -1,3 +1,4 @@
-#ncal-js
-A js clone of the unix cal, ncal tools
-# usage
+# ncal-js
+A commandline calender viewer inspired by cal and ncal.
+
+# Usage
