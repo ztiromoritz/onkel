@@ -1,5 +1,5 @@
 # onkel
-A commandline calender viewer inspired by cal and ncal.
+A commandline calender inspired by cal and ncal.
 
 
 <img src="https://raw.githubusercontent.com/ztiromoritz/ncal-js/master/screenshot.png" alt="screenshot" width="360">

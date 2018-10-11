@@ -89,7 +89,7 @@ function* dateLines(cell, marker) {
         let str = "" + i;
         str = (str.length === 1) ? ` ${str}` : `${str}`;
         if (marker && marker(current.clone())) {
-            str = colors.red(str);
+            str = colors.white.bgMagenta(str);
         }
         result += str;
         if ((i + offset) % 7 === 0) {
@@ -215,16 +215,20 @@ function getMarker(options) {
 
 
 function listLocales(writeLine) {
+    const cols = 10;
+    const colWidth = 9
+    writeLine(colors.inverse(center('Locales', cols * colWidth)));
     const locales = fs.readdirSync('./node_modules/moment/locale')
         .map(filename => filename.replace(/\.[^/.]+$/, ""));
     let line = '';
     for (let i = 0; i < locales.length; i++) {
-        if (i % 10 === 0) {
+        if (i % cols === 0) {
             writeLine(line);
             line = '';
         }
-        line += padRight(locales[i], 10);
+        line += padRight(locales[i], colWidth);
     }
+
 }
 
 
