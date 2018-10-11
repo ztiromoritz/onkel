@@ -38,6 +38,11 @@ function center(str, width) {
     return sp(before) + str + sp(after);
 }
 
+function padRight(str, width) {
+    const spaces = width - str.length;
+    return str + sp(spaces);
+}
+
 function yearLine(layout, index) {
     const year = layout.yearBeforeRows[`${index}`];
     if (typeof(year) !== 'undefined') {
@@ -45,7 +50,7 @@ function yearLine(layout, index) {
     }
     return false;
 }
-;
+
 
 function monthLine(cell, layout) {
     const current = (typeof(cell.month) !== 'undefined') ? m().month(cell.month) : m();
@@ -218,7 +223,7 @@ function listLocales(writeLine) {
             writeLine(line);
             line = '';
         }
-        line += center(locales[i], 10);
+        line += padRight(locales[i], 10);
     }
 }
 
