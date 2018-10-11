@@ -119,8 +119,8 @@ const parseMonthArg = (str) => {
     return month - 1;
 }
 
-function getYearLayout(options) {
-    const year = parseYearArg(options.args[0]);
+function getYearLayout(options, yearOverride) {
+    const year = (typeof yearOverride !== 'undefined') ? parseYearArg(yearOverride) : parseYearArg(options.args[0]);
     const columns = (options.columns > 0) ? options.columns : 3;
     const matrix = [];
     for (let month = 0; month < 12; month++) {
@@ -158,10 +158,13 @@ function getLayout(options) {
     const args = options.args;
     let year, month;
     if (args.length === 0) {
-
-        const year = moment().year();
-        const month = moment().month();
-        return getMonthLayout(year,month);
+        if (options.year) {
+            return getYearLayout(options, moment().year());
+        } else {
+            const year = moment().year();
+            const month = moment().month();
+            return getMonthLayout(year, month);
+        }
     } else if (args.length === 1) {
         return getYearLayout(options);
     } else if (args.length > 1) {
@@ -191,11 +194,16 @@ function getLayout(options) {
 
 
 function getMarker(options) {
+    if (options.noHighlights){
+        return (aMoment) => false;
+    }
     if (typeof(options.highlights) === 'string') {
         const dates = options.highlights.split(',').map(str => moment(str));
         return (aMoment) => !!dates.find(m => m.isSame(aMoment, 'day'))
     }
-    return (aMoment) => false;
+    return (aMoment) => {
+        return moment().isSame(aMoment, 'day');
+    };
 };
 
 
