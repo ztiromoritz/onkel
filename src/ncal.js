@@ -1,6 +1,6 @@
 const moment = require("moment");
-const colors = require('colors/safe');
 const fs = require('fs');
+const formatter = require('./formatter.js');
 
 const ncal = {};
 
@@ -46,7 +46,7 @@ function padRight(str, width) {
 function yearLine(layout, index) {
     const year = layout.yearBeforeRows[`${index}`];
     if (typeof(year) !== 'undefined') {
-        return colors.inverse(center(`${year}`, layout.colCount * LINE_WIDTH + (layout.colCount - 1) * H_SPACE.length));
+        return formatter.headline(center(`${year}`, layout.colCount * LINE_WIDTH + (layout.colCount - 1) * H_SPACE.length));
     }
     return false;
 }
@@ -87,10 +87,10 @@ function* dateLines(cell, marker) {
     for (let i = 1; i <= daysInMonth; i++) {
         current.date(i);
         let str = "" + i;
-        str = (str.length === 1) ? ` ${str}` : `${str}`;
         if (marker && marker(current.clone())) {
-            str = colors.white.bgMagenta(str);
+            str = formatter.marked(str);
         }
+        str = (str.length === 1) ? ` ${str}` : `${str}`;
         result += str;
         if ((i + offset) % 7 === 0) {
             yield result;
@@ -217,7 +217,7 @@ function getMarker(options) {
 function listLocales(writeLine) {
     const cols = 10;
     const colWidth = 9
-    writeLine(colors.inverse(center('Locales', cols * colWidth)));
+    writeLine(formatter.headline(center('Locales', cols * colWidth)));
     const locales = fs.readdirSync('./node_modules/moment/locale')
         .map(filename => filename.replace(/\.[^/.]+$/, ""));
     let line = '';
@@ -251,14 +251,46 @@ function printCalendar(options, writeLine) {
     });
 }
 
+
+function getWriteLine(out) {
+    if (out) {
+        return (str) => (!!str) && out.write(`${str}\n`);
+    } else {
+        let resultString = '';
+        const writeLine = function (str) {
+            if (!!str)
+                resultString += `${str}\n`;
+        }
+        writeLine.result = () => resultString;
+        return writeLine;
+    }
+}
+
+function setFormatter(options) {
+    if (options.textOnly) {
+        formatter.setType('unicode');
+    } else {
+        formatter.setType('colors');
+    }
+}
+
+function setLocale(options){
+    if(typeof(options.locale) === 'string') {
+        moment.locale(options.locale);
+    }
+}
+
 ncal.exec = function (options, out) {
-    (typeof(options.locale) === 'string') && moment.locale(options.locale);
-    const writeLine = (str) => (!!str) && out.write(`${str}\n`);
+    setFormatter(options);
+    setLocale(options);
+    const writeLine = getWriteLine(out);
     if (options.listLocales) {
         listLocales(writeLine);
     } else {
         printCalendar(options, writeLine);
     }
+    if (typeof(out) === 'undefined')
+        return writeLine.result();
 };
 
 
