@@ -1,5 +1,7 @@
 const moment = require("moment");
 const colors = require('colors/safe');
+const fs = require('fs');
+
 const ncal = {};
 
 //                 "Mo Di Mi Do Fr Sa So"
@@ -26,7 +28,7 @@ function sp(count) {
 }
 
 function m() {
-    return moment().locale('de'); // TODO: from settings;
+    return moment(); // TODO: remove this;
 }
 
 function center(str, width) {
@@ -207,33 +209,47 @@ function getMarker(options) {
 };
 
 
-ncal.exec = function (options, out) {
-
-
-    const ln = (str) => {
-        if (str) {
-            out.write(`${str}\n`)
+function listLocales(writeLine) {
+    const locales = fs.readdirSync('./node_modules/moment/locale')
+        .map(filename => filename.replace(/\.[^/.]+$/, ""));
+    let line = '';
+    for (let i = 0; i < locales.length; i++) {
+        if (i % 10 === 0) {
+            writeLine(line);
+            line = '';
         }
-    };
+        line += center(locales[i], 10);
+    }
+}
+
+
+function printCalendar(options, writeLine) {
     const marker = getMarker(options);
     const layout = getLayout(options);
-
     layout.matrix.map((matrixLine, index) => {
-        ln(yearLine(layout, index));
-        ln(matrixLine.map(cell => monthLine(cell, layout)).join(H_SPACE));
-        ln(matrixLine.map(cell => dayLine()).join(H_SPACE));
+        writeLine(yearLine(layout, index));
+        writeLine(matrixLine.map(cell => monthLine(cell, layout)).join(H_SPACE));
+        writeLine(matrixLine.map(cell => dayLine()).join(H_SPACE));
         const iterators = matrixLine.map(cell => dateLines(cell, marker));
         for (let l = 0; l < MAX_DATE_LINES; l++) {
             const line = iterators
                 .map(it => it.next())
                 .map(next => next.done ? EMPTY_LINE : next.value)
                 .join(H_SPACE);
-            ln(line);
+            writeLine(line);
         }
-        ln();
+        writeLine();
     });
+}
 
-
+ncal.exec = function (options, out) {
+    (typeof(options.locale) === 'string') && moment.locale(options.locale);
+    const writeLine = (str) => (!!str) && out.write(`${str}\n`);
+    if (options.listLocales) {
+        listLocales(writeLine);
+    } else {
+        printCalendar(options, writeLine);
+    }
 };
 
 
