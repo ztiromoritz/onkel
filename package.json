@@ -1,6 +1,6 @@
 {
   "name": "onkel",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A commandline calender inspired by cal and ncal.",
   "main": "./index.js",
   "scripts": {
