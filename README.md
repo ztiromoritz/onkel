@@ -17,8 +17,10 @@ Options:
   -l, --locale <locale>     Select a locale.
   -L, --listLocales         List available locales.
   -y, --year                Display a calendar for the specified year.
+  -t, --textOnly            No color escape sequences.
   -n, --noHighlights        No highlights at all. (Overrides -H).
-  -H, --highlights [dates]  Comma separated lists of dates to highlight. This does not affect which month and year is shown.
+  -H, --highlights [dates]  Comma separated lists of dates to highlight. 
+                            This does not affect which month and year is shown.
   -c, --columns <number>    Number of month per row
   -h, --help                output usage information
 ```
