@@ -25,6 +25,13 @@ describe('CLI smoke tests', () => {
         })
     })
 
+    it('Exit code 0 - on -3', (done)=>{
+        exec('./index.js -3', (error)=>{
+            assert.equal(error, null);
+            done();
+        })
+    })
+
     it('Exit code !=0 - on unknow option', (done)=>{
         exec('./index.js --unknownOption', (error)=>{
             assert.notEqual(error, null);

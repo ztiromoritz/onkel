@@ -16,8 +16,15 @@ options
     .option('-n, --noHighlights', 'No highlights at all. (Overrides -H).')
     .option('-H, --highlights [dates]', 'Comma separated lists of dates to highlight. This does not affect which month and year is shown.')
     .option('-c, --columns <number>', 'Number of month per row', parseInt)
+    .option('-A, --after <number>', 'Display the number of months after the current month.', parseInt)
+    .option('-B, --before <number>', 'Display the number of months before the current month.', parseInt)
+    .option('-3', 'Display the previous, current and next month surrounding today.')
     .parse(process.argv);
 
-onkel(options, process.stdout);
-
+try {
+    onkel(options, process.stdout);
+}catch(e){
+    console.error((e.message)?e.message:e);
+    process.exit(1);
+}
 

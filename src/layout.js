@@ -1,6 +1,5 @@
 const moment = require("moment");
 
-
 const parseYearArg = (str) => {
     const year = parseInt(str);
     if (isNaN(year)) {
@@ -16,7 +15,6 @@ const parseMonthArg = (str) => {
     }
     return month - 1;
 }
-
 
 const getYearLayout = (options, yearOverride) => {
     const year = (typeof yearOverride !== 'undefined') ? parseYearArg(yearOverride) : parseYearArg(options.args[0]);
@@ -54,6 +52,60 @@ const getMonthLayout = (year, month) => {
     };
 }
 
+
+const getLayoutRange = (options, from, to) => {
+    const fromMoment = moment().month(from.month).year(from.year);
+    const toMoment = moment().month(to.month).year(to.year);
+    const current = fromMoment.clone();
+    const count = toMoment.diff(fromMoment, 'month');
+    const columns = (options.columns > 0) ? options.columns : 3;
+    const matrix = [];
+    for (let month = 0; month <= count; month++) {
+        let row;
+        if (month % columns === 0) {
+            row = [];
+            matrix.push(row);
+        } else {
+            row = matrix[Math.floor(month / columns)];
+        }
+        row.push({year: current.year(), month: current.month()});
+        current.add(1, 'month');
+    }
+    return {
+        matrix,
+        yearTitleRows: [],
+        colCount: columns,
+        rowCount: matrix.length,
+        yearInMonthTitle: true
+    };
+};
+
+const getLayoutWithContext = (options, before, after) => {
+
+    const year = moment().year();
+    const month = moment().month();
+    const current = moment().month(month).year(year).subtract(before, 'month');
+    const count = before + after + 1;
+    const entries = [];
+    for (let i = 0; i < count; i++) {
+        entries.push({year: current.year(), month: current.month()})
+        current.add(1, 'month');
+    }
+
+    // if the first year reaches the column count there are yearTitleRows
+    const matrix = [entries];
+
+
+    return {
+        matrix,
+        colCount: count,
+        rowCount: 1,
+        yearInMonthTitle: true,
+        yearTitleRows: []
+    };
+};
+
+
 /**
  * Creates a layout model.
  * Example
@@ -80,20 +132,43 @@ const getMonthLayout = (year, month) => {
  */
 function getLayout(options) {
     const args = options.args;
-    let year, month;
-    if (args.length === 0) {
+
+    // TODO: handle option clashes
+
+    // Get current date to show
+    let year = moment().year();
+    let month = moment().month();
+    if (args.length === 1){
+        year = parseYearArg(options.args[0])
+    }else if (args.length > 1){
+        year = parseYearArg(options.args[1]);
+        month = parseMonthArg(options.args[0]);
+    }
+
+    // Calc mode
+    if (options['3']) {
+        const from = moment().year(year).month(month).subtract(1, 'month');
+        const to = moment().year(year).month(month).add(1, 'month');
+        return getLayoutRange(options,
+            {year: from.year(), month: from.month()},
+            {year: to.year(), month: to.month()});
+    } else if(options['after'] || options['before']){
+        const after = options['after']?options['after']:0;
+        const before = options['before']?options['before']:0;
+        const from = moment().year(year).month(month).subtract(before, 'month');
+        const to = moment().year(year).month(month).add(after, 'month');
+        return getLayoutRange(options,
+            {year: from.year(), month: from.month()},
+            {year: to.year(), month: to.month()});
+    } else if (args.length === 0) {
         if (options.year) {
             return getYearLayout(options, moment().year());
         } else {
-            const year = moment().year();
-            const month = moment().month();
             return getMonthLayout(year, month);
         }
     } else if (args.length === 1) {
         return getYearLayout(options);
     } else if (args.length > 1) {
-        const year = parseYearArg(options.args[1]);
-        const month = parseMonthArg(options.args[0]);
         return getMonthLayout(year, month);
     }
 }

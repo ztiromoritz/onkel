@@ -116,7 +116,7 @@ function printCalendar(options, writeLine) {
                 .join(H_SPACE);
             writeLine(line);
         }
-        writeLine();
+        writeLine(' ');
     });
 }
 
