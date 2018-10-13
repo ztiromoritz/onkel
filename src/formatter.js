@@ -4,7 +4,7 @@ const colors = require('colors/safe');
 const TYPES = {
     "colors": {
         headline: str => colors.inverse(str),
-        marked: str => colors.white.bgMagenta(str)
+        marked: str => colors.inverse(str)
     },
 
     // unicode only formatter using diacritical marks

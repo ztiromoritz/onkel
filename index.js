@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const ncal = require('./src/ncal.js');
+const onkel = require('./src/onkel.js');
 const options = require('commander');
 const pkg = require('./package.json');
 
@@ -18,6 +18,6 @@ options
     .option('-c, --columns <number>', 'Number of month per row', parseInt)
     .parse(process.argv);
 
-ncal.exec(options, process.stdout);
+onkel(options, process.stdout);
 
 

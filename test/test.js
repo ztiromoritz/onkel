@@ -1,11 +1,11 @@
 const assert = require('assert');
-const ncal = require('../src/ncal.js');
+const onkel = require('../src/onkel.js');
 
-describe('nacl', () => {
+describe('onkel', () => {
 
     it('One month test', () => {
         const options = {args:[1,2010]};
-        const result = ncal.exec(options);
+        const result = onkel(options);
         const expected =
 `    January 2010    
 Su Mo Tu We Th Fr Sa
@@ -16,7 +16,6 @@ Su Mo Tu We Th Fr Sa
 24 25 26 27 28 29 30
 31                  
 `;
-        console.log(result);
         assert.equal(result,expected)
     })
 })
