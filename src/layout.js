@@ -18,27 +18,9 @@ const parseMonthArg = (str) => {
 
 const getYearLayout = (options, yearOverride) => {
     const year = (typeof yearOverride !== 'undefined') ? parseYearArg(yearOverride) : parseYearArg(options.args[0]);
-    const columns = (options.columns > 0) ? options.columns : 3;
-    const matrix = [];
-    for (let month = 0; month < 12; month++) {
-        let row;
-        if (month % columns === 0) {
-            row = [];
-            matrix.push(row);
-        } else {
-            row = matrix[Math.floor(month / columns)];
-        }
-        row.push({year, month});
-    }
-    const yearTitleRows = [];
-    yearTitleRows[0] = year;
-    return {
-        matrix,
-        yearTitleRows,
-        colCount: columns,
-        rowCount: matrix.length,
-        yearInMonthTitle: false
-    };
+    const from = moment().year(year).month(0);
+    const to = moment().year(year).month(11);
+    return getLayoutRange(options, from, to);
 }
 
 const getMonthLayout = (year, month) => {
@@ -52,59 +34,67 @@ const getMonthLayout = (year, month) => {
     };
 }
 
+const monthGen = function* (from, to){
+    const current = from.clone();
+    while (current.isSameOrBefore(to, 'month')) {
+        yield [current.year(), current.month()];
+        current.add(1, 'month');
+    }
+}
+
 
 const getLayoutRange = (options, from, to) => {
-    const fromMoment = moment().month(from.month).year(from.year);
-    const toMoment = moment().month(to.month).year(to.year);
-    const current = fromMoment.clone();
-    const count = toMoment.diff(fromMoment, 'month');
+    const allMonth = monthGen(from,to)
+    const count = to.diff(from, 'month');
     const columns = (options.columns > 0) ? options.columns : 3;
     const matrix = [];
-    for (let month = 0; month <= count; month++) {
-        let row;
-        if (month % columns === 0) {
+    const spreadYears = [];
+
+    // Fill matrix
+    let n = 0;
+    let row;
+    for (let [year, month] of allMonth) {
+        if (n % columns === 0) {
             row = [];
             matrix.push(row);
         } else {
-            row = matrix[Math.floor(month / columns)];
+            row = matrix[Math.floor(n / columns)];
         }
-        row.push({year: current.year(), month: current.month()});
-        current.add(1, 'month');
+        if (!spreadYears.includes(year)) {
+            spreadYears.push(year);
+        }
+        row.push({year, month});
+        n++;
     }
+
+
+    // Set yearTitleRows, yearInMonthTitle behaviour
+    const yearTitleRows = [];
+    const isDivider = [1, 2, 3, 4, 6, 12].includes(columns);
+    if (count == 1) {
+        // noop;
+    } else if (spreadYears.length === 1) {
+        if (matrix[0][0].month === 0) {
+            yearTitleRows[0] = spreadYears[0];
+        }
+    } else {
+        if (isDivider) {
+            for (let n = 0; n < matrix.length; n++) {
+                if (matrix[n][0].month === 0) {
+                    yearTitleRows[n] = matrix[n][0].year;
+                }
+            }
+        }
+    }
+
     return {
         matrix,
-        yearTitleRows: [],
+        yearTitleRows,
         colCount: columns,
         rowCount: matrix.length,
-        yearInMonthTitle: true
+        yearInMonthTitle: (yearTitleRows.length === 0)
     };
 };
-
-const getLayoutWithContext = (options, before, after) => {
-
-    const year = moment().year();
-    const month = moment().month();
-    const current = moment().month(month).year(year).subtract(before, 'month');
-    const count = before + after + 1;
-    const entries = [];
-    for (let i = 0; i < count; i++) {
-        entries.push({year: current.year(), month: current.month()})
-        current.add(1, 'month');
-    }
-
-    // if the first year reaches the column count there are yearTitleRows
-    const matrix = [entries];
-
-
-    return {
-        matrix,
-        colCount: count,
-        rowCount: 1,
-        yearInMonthTitle: true,
-        yearTitleRows: []
-    };
-};
-
 
 /**
  * Creates a layout model.
@@ -149,17 +139,13 @@ function getLayout(options) {
     if (options['3']) {
         const from = moment().year(year).month(month).subtract(1, 'month');
         const to = moment().year(year).month(month).add(1, 'month');
-        return getLayoutRange(options,
-            {year: from.year(), month: from.month()},
-            {year: to.year(), month: to.month()});
+        return getLayoutRange(options, from, to);
     } else if(options['after'] || options['before']){
         const after = options['after']?options['after']:0;
         const before = options['before']?options['before']:0;
         const from = moment().year(year).month(month).subtract(before, 'month');
         const to = moment().year(year).month(month).add(after, 'month');
-        return getLayoutRange(options,
-            {year: from.year(), month: from.month()},
-            {year: to.year(), month: to.month()});
+        return getLayoutRange(options, from, to);
     } else if (args.length === 0) {
         if (options.year) {
             return getYearLayout(options, moment().year());
