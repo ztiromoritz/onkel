@@ -4,7 +4,8 @@
   "description": "A commandline calender inspired by cal and ncal.",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha"
+    "preversion" : "npm test",
+    "test": "nyc mocha"
   },
   "author": "Moritz Rebbert <moritz.rebbert@udo.edu>",
   "license": "ISC",
@@ -17,6 +18,7 @@
     "onkel": "./index.js"
   },
   "devDependencies": {
-    "mocha": "^5.2.0"
+    "mocha": "^5.2.0",
+    "nyc": "^13.1.0"
   }
 }

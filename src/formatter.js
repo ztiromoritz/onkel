@@ -24,8 +24,16 @@ module.exports = (function () {
     let current = TYPES.colors;
 
     const formatter = {};
-    formatter.setType = (str) => {
+    const setType = (str) => {
         current = TYPES[str] || TYPES.colors;
+    }
+
+    formatter.configure = (options) => {
+        if (options.textOnly) {
+            setType('unicode');
+        } else {
+            setType('colors');
+        }
     }
 
     formatter.headline = (str) => current.headline(str);

@@ -58,8 +58,6 @@ function padLastRow(offset, daysInMonth) {
     return spaces((7 - (daysInMonth + offset) % 7) * 3 - 1);
 }
 
-
-
 function* dateLines({year, month}, marker = () => false) {
     const current = moment().year(year).month(month);
     const firstWeekday = moment().weekday(0).day();
@@ -134,16 +132,8 @@ function getWriteLine(out) {
     }
 }
 
-function setFormatter(options) {
-    if (options.textOnly) {
-        formatter.setType('unicode');
-    } else {
-        formatter.setType('colors');
-    }
-}
-
 module.exports = (options, out) => {
-    setFormatter(options);
+    formatter.configure(options);
     setLocale(options);
     const writeLine = getWriteLine(out);
     if (options.listLocales) {
