@@ -2,7 +2,7 @@ const moment = require("moment");
 const fs = require('fs');
 const formatter = require('./formatter.js');
 const {getLayout} = require('./layout.js');
-const {setLocale, listLocales} = require('./localeUtils.js');
+const {setLocale, listLocales} = require('./locale.js');
 const {spaces, center, padRight, padLeft} = require('./stringUtils.js');
 
 

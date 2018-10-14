@@ -3,9 +3,6 @@ const onkel = require('../src/onkel.js');
 
 describe('onkel', () => {
 
-
-
-
         it('One month test', () => {
             const options = {args:[1,2010]};
             const result = onkel(options);

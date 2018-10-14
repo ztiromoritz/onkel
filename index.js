@@ -21,10 +21,10 @@ options
     .option('-3', 'display the previous, current and next month surrounding today.')
     .parse(process.argv);
 
-//try {
+try {
     onkel(options, process.stdout);
-/*}catch(e){
+}catch(e){
     console.error((e.message)?e.message:e);
     process.exit(1);
-}*/
+}
 

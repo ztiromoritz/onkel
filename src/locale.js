@@ -17,6 +17,7 @@ const listLocales = (writeLine) => {
         }
         line += padRight(locales[i], colWidth);
     }
+    writeLine(line);
 
 };
 
