@@ -1,10 +1,10 @@
 {
   "name": "onkel",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A commandline calender inspired by cal and ncal.",
   "main": "./index.js",
   "scripts": {
-    "preversion" : "npm test",
+    "preversion": "npm test",
     "test": "nyc mocha"
   },
   "author": "Moritz Rebbert <moritz.rebbert@udo.edu>",
