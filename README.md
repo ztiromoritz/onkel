@@ -43,16 +43,16 @@ A commandline calendar inspired by tools like cal, pal and ncal.
 Options:
 
   -v, --version             output the version number
-  -l, --locale <locale>     Select a locale.
-  -L, --listLocales         List available locales.
-  -y, --year                Display a calendar for the specified year.
-  -t, --textOnly            No color escape sequences.
-  -n, --noHighlights        No highlights at all. (Overrides -H).
-  -H, --highlights [dates]  Comma separated lists of dates to highlight. This does not affect which month and year is shown.
-  -c, --columns <number>    Number of month per row
-  -A, --after <number>      Display the number of months after the current month.
-  -B, --before <number>     Display the number of months before the current month.
-  -3                        Display the previous, current and next month surrounding today.
+  -l, --locale <locale>     select a locale
+  -L, --listLocales         list available locales
+  -y, --year                display a calendar for the specified year
+  -t, --textOnly            disable ANSI escape sequence for colors
+  -n, --noHighlights        no highlights at all (Overrides -H)
+  -H, --highlights [dates]  comma separated lists of dates to highlight
+  -c, --columns <number>    number of month per row
+  -A, --after <number>      display the number of months after the current month
+  -B, --before <number>     display the number of months before the current month
+  -3                        display the previous, current and next month surrounding today.
   -h, --help                output usage information
 ```
 
