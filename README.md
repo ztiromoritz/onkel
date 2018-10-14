@@ -1,10 +1,39 @@
 # onkel
 A commandline calender inspired by cal and ncal.
 
-
 <img src="https://raw.githubusercontent.com/ztiromoritz/ncal-js/master/screenshot.png" alt="screenshot" width="360">
 
-# Usage
+## Installation
+```
+npm install -g onkel
+```
+
+## Some examples:
+```
+onkel          # calendar of the current month
+onkel -y       # calendar of the current year
+onkel 2048     # calendar of the year 2048
+onkel -3       # calendar of three month: the last, the current, and the upcomming
+onkel 12 1990  # calendar of the December 1990
+```
+## Highlighting
+The current day, if visible, is highlighted in all these examples.
+You can control these highligting by disable it completly or customize 
+the dates to highlight.
+```
+onkel -n       # current month without highlight
+# To set custom highlights use -H            
+onkel 1981 -H 1981-07-23,1981-07-24
+```
+
+## Localization
+Onkel only supports gregorian calendar based on [moment.js](https://momentjs.com/).
+```
+onkel -L          # to get a list of all available locales
+onkel -l de 1981  # to get the calendar
+```
+
+## All Options
 
 ```
 Usage: onkel [options] <<month> year>
@@ -27,5 +56,3 @@ Options:
   -h, --help                output usage information
 ```
 
-# Notes 
-Onkel only supports gregorian calendar based on [moment.js](https://momentjs.com/).
