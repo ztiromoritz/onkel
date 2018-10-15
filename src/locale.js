@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const moment = require("moment");
 const {spaces, center} = require('./string.js');
 const formatter = require('./formatter.js');
@@ -7,7 +8,7 @@ const listLocales = (writeLine) => {
     const cols = 10;
     const colWidth = 9
     writeLine(formatter.headline(center('Locales', cols * colWidth)));
-    const locales = fs.readdirSync('./node_modules/moment/locale')
+    const locales = fs.readdirSync(path.resolve(__dirname,'../node_modules/moment/locale'))
         .map(filename => filename.replace(/\.[^/.]+$/, ""));
     let line = '';
     for (let i = 0; i < locales.length; i++) {
