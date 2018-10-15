@@ -46,7 +46,7 @@ Options:
   -l, --locale <locale>     select a locale
   -L, --listLocales         list available locales
   -y, --year                display a calendar for the specified year
-  -t, --textOnly            disable ANSI escape sequence for colors
+  -d, --decoration <mode>   highlight style. one of: underline, color, none. default is color
   -n, --noHighlights        no highlights at all (Overrides -H)
   -H, --highlights [dates]  comma separated lists of dates to highlight
   -c, --columns <number>    number of month per row
