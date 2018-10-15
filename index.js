@@ -12,7 +12,7 @@ options
     .option('-l, --locale <locale>',  'select a locale')
     .option('-L, --listLocales',  'list available locales')
     .option('-y, --year', 'display a calendar for the specified year' )
-    .option('-t, --textOnly', 'disable ANSI escape sequence for colors')
+    .option('-d, --decoration <mode>', 'highlight style. one of: underline, color, none. default is color')
     .option('-n, --noHighlights', 'no highlights at all (Overrides -H)')
     .option('-H, --highlights [dates]', 'comma separated lists of dates to highlight')
     .option('-c, --columns <number>', 'number of month per row', parseInt)

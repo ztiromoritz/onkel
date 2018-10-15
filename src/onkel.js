@@ -3,7 +3,7 @@ const fs = require('fs');
 const formatter = require('./formatter.js');
 const {getLayout} = require('./layout.js');
 const {setLocale, listLocales} = require('./locale.js');
-const {spaces, center, padRight, padLeft} = require('./stringUtils.js');
+const {spaces, center} = require('./string.js');
 
 
 //                 "Mo Di Mi Do Fr Sa So"
@@ -34,11 +34,11 @@ function yearLine(layout, index) {
 }
 
 
-function monthLine(cell, layout) {
-    const current = (typeof(cell.month) !== 'undefined') ? moment().month(cell.month) : moment();
+function monthLine({year, month}, layout) {
+    const current =  moment().month(month);
     let str = current.format('MMMM');
     if (layout.yearInMonthTitle) {
-        str = `${str} ${cell.year}`;
+        str = `${str} ${year}`;
     }
     return center(str, LINE_WIDTH);
 }
@@ -46,7 +46,7 @@ function monthLine(cell, layout) {
 function dayLine(year) {
     return range(0, 6)
         .map(n => moment().weekday(n).format('dd'))
-        .map(str => padLeft(str,2))
+        .map(str => str.padStart(2))
         .join(' ');
 }
 
@@ -58,7 +58,7 @@ function padLastRow(offset, daysInMonth) {
     return spaces((7 - (daysInMonth + offset) % 7) * 3 - 1);
 }
 
-function* dateLines({year, month}, marker = () => false) {
+function* dateLines({year, month}, marker) {
     const current = moment().year(year).month(month);
     const firstWeekday = moment().weekday(0).day();
     const firstWeekdayOfMonth = current.date(1).day();
@@ -72,7 +72,7 @@ function* dateLines({year, month}, marker = () => false) {
     let row = padFirstRow(offset);
     for (let day = 1; day <= daysInMonth; day++) {
         let label = `${day}`;
-        label = padLeft(label,2);
+        label = label.padStart(2);
         label = mark(label, day);
         row += label;
         if (linebreak(day)) {

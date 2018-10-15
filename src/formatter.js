@@ -2,18 +2,18 @@ const colors = require('colors/safe');
 
 
 const TYPES = {
-    "colors": {
+    "color": {
         headline: str => colors.inverse(str),
         marked: str => colors.inverse(str)
     },
 
     // unicode only formatter using diacritical marks
-    "unicode": {
+    "underline": {
         headline: str => str.split('').map(c => (c!==' ')?`${c}\u0332`:c).join(''),
         marked: str => str.split('').map(c => (c!==' ')?`${c}\u0332`:c).join('')
     },
 
-    "empty": {
+    "none": {
         headline: str => str,
         marked: str => str
     }
@@ -25,14 +25,16 @@ module.exports = (function () {
 
     const formatter = {};
     const setType = (str) => {
-        current = TYPES[str] || TYPES.colors;
+        current = TYPES[str];
     }
 
     formatter.configure = (options) => {
-        if (options.textOnly) {
-            setType('unicode');
+        if (options.decoration === 'underline') {
+            setType('underline');
+        } else if (options.decoration === 'none'){
+            setType('none');
         } else {
-            setType('colors');
+            setType('color');
         }
     }
 

@@ -12,4 +12,6 @@ describe('locale', () => {
         const files = fs.readdirSync('./node_modules/moment/locale');
         assert.equal(locales.length, files.length);
     });
+
+    // TODO: path to node_modules does not work in global mode
 });

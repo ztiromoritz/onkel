@@ -2,7 +2,7 @@ const assert = require('assert');
 const onkel = require('../src/onkel.js');
 const exec = require('child_process').exec;
 
-xdescribe('CLI smoke tests', () => {
+describe('cli (smoke test)', () => {
 
     it('Exit code 0 - no arguments', (done)=>{
         exec('./index.js', (error)=>{
@@ -38,5 +38,12 @@ xdescribe('CLI smoke tests', () => {
             done();
         })
     })
+
+    it('Negative year', (done)=>{
+        exec('./index.js -13', (error)=>{
+            assert.notEqual(error, null);
+            done();
+        })
+    });
 
 });

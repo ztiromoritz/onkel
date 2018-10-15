@@ -1,6 +1,6 @@
 const fs = require('fs');
 const moment = require("moment");
-const {spaces, center, padRight} = require('./stringUtils.js');
+const {spaces, center} = require('./string.js');
 const formatter = require('./formatter.js');
 
 const listLocales = (writeLine) => {
@@ -15,7 +15,7 @@ const listLocales = (writeLine) => {
             writeLine(line);
             line = '';
         }
-        line += padRight(locales[i], colWidth);
+        line += locales[i].padEnd(colWidth);
     }
     writeLine(line);
 
@@ -24,6 +24,8 @@ const listLocales = (writeLine) => {
 const setLocale = (options) => {
     if (typeof(options.locale) === 'string') {
         moment.locale(options.locale);
+    }else{
+        moment.locale('en');
     }
 }
 

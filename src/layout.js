@@ -16,24 +16,6 @@ const parseMonthArg = (str) => {
     return month - 1;
 }
 
-const getYearLayout = (options, yearOverride) => {
-    const year = (typeof yearOverride !== 'undefined') ? parseYearArg(yearOverride) : parseYearArg(options.args[0]);
-    const from = moment().year(year).month(0);
-    const to = moment().year(year).month(11);
-    return getLayoutRange(options, from, to);
-}
-
-const getMonthLayout = (year, month) => {
-    const matrix = [[{year, month}]];
-    return {
-        matrix,
-        colCount: 1,
-        rowCount: 1,
-        yearInMonthTitle: true,
-        yearTitleRows: []
-    };
-}
-
 const monthGen = function* (from, to){
     const current = from.clone();
     while (current.isSameOrBefore(to, 'month')) {
@@ -45,7 +27,7 @@ const monthGen = function* (from, to){
 
 const getLayoutRange = (options, from, to) => {
     const allMonth = monthGen(from,to)
-    const count = to.diff(from, 'month');
+    const count = to.diff(from, 'month') + 1 ;
     const columns = (options.columns > 0) ? options.columns : 3;
     const matrix = [];
     const spreadYears = [];
@@ -71,7 +53,7 @@ const getLayoutRange = (options, from, to) => {
     // Set yearTitleRows, yearInMonthTitle behaviour
     const yearTitleRows = [];
     const isDivider = [1, 2, 3, 4, 6, 12].includes(columns);
-    if (count == 1) {
+    if (count === 1) {
         // noop;
     } else if (spreadYears.length === 1) {
         if (matrix[0][0].month === 0) {
@@ -79,8 +61,15 @@ const getLayoutRange = (options, from, to) => {
         }
     } else {
         if (isDivider) {
-            for (let n = 0; n < matrix.length; n++) {
-                if (matrix[n][0].month === 0) {
+            // check first line
+            if(matrix[0][0].month % columns === 0){
+                // We know we will find Januaries as first element in row,
+                // so there will be titles, therefore we have to start with a
+                // title row in any way
+                yearTitleRows[0] = matrix[0][0].year;
+            }
+            for (let n = 1; n < matrix.length; n++) {
+                if (matrix[n][0].month=== 0) {
                     yearTitleRows[n] = matrix[n][0].year;
                 }
             }
@@ -90,7 +79,7 @@ const getLayoutRange = (options, from, to) => {
     return {
         matrix,
         yearTitleRows,
-        colCount: columns,
+        colCount: Math.min(columns,count),
         rowCount: matrix.length,
         yearInMonthTitle: (yearTitleRows.length === 0)
     };
@@ -134,28 +123,24 @@ function getLayout(options) {
         year = parseYearArg(options.args[1]);
         month = parseMonthArg(options.args[0]);
     }
+    const after = options['after'] ? options['after'] : 0;
+    const before = options['before'] ? options['before'] : 0;
 
     // Calc mode
     if (options['3']) {
         const from = moment().year(year).month(month).subtract(1, 'month');
         const to = moment().year(year).month(month).add(1, 'month');
         return getLayoutRange(options, from, to);
-    } else if(options['after'] || options['before']){
-        const after = options['after']?options['after']:0;
-        const before = options['before']?options['before']:0;
+    } else if (options.year || args.length === 1) {
+        // A whole year (+A, +B)
+        const from = moment().year(year).month(0).subtract(before, 'month');
+        const to = moment().year(year).month(11).add(after, 'month');
+        return getLayoutRange(options, from, to);
+    } else {
+        // single month (+A,+B)
         const from = moment().year(year).month(month).subtract(before, 'month');
         const to = moment().year(year).month(month).add(after, 'month');
         return getLayoutRange(options, from, to);
-    } else if (args.length === 0) {
-        if (options.year) {
-            return getYearLayout(options, moment().year());
-        } else {
-            return getMonthLayout(year, month);
-        }
-    } else if (args.length === 1) {
-        return getYearLayout(options);
-    } else if (args.length > 1) {
-        return getMonthLayout(year, month);
     }
 }
 
