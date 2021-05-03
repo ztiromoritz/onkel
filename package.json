@@ -13,8 +13,8 @@
   "dependencies": {
     "colors": "^1.3.2",
     "commander": "^2.18.0",
-    "garfunkel": "https://github.com/ztiromoritz/garfunkel",
-    "moment": "^2.22.2"
+    "moment": "^2.22.2",
+    "rpg-fight": "https://github.com/ztiromoritz/rpg-fight"
   },
   "bin": {
     "onkel": "./index.js"
