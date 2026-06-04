@@ -56,3 +56,7 @@ Options:
   -h, --help                output usage information
 ```
 
+## Changelog
+
+### 0.4.0
+ - .onkel/config.json to set locale
